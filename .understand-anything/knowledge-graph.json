@@ -1,0 +1,233 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-04-20T00:00:00.000Z",
+  "projectRoot": "/home/basitdev/workspace/log-mcp-server",
+  "nodes": [
+    {
+      "id": "file:src/log_mcp/server.py",
+      "type": "file",
+      "name": "server.py",
+      "filePath": "src/log_mcp/server.py",
+      "layer": "api",
+      "summary": "FastMCP server that registers seven MCP tools: four for local log files (tail, search, filter_level, summarize) and three for Docker container logs (docker_logs, docker_grep, docker_errors). Delegates all logic to the file_logs and docker_logs tool modules.",
+      "language": "python"
+    },
+    {
+      "id": "file:src/log_mcp/tools/file_logs.py",
+      "type": "file",
+      "name": "file_logs.py",
+      "filePath": "src/log_mcp/tools/file_logs.py",
+      "layer": "service",
+      "summary": "Log analysis functions for local files. Supports tailing, regex search, level filtering (handles both JSON-structured logs and plain text), and error summarization with pattern deduplication via Counter.",
+      "language": "python",
+      "concepts": ["pattern-matching"]
+    },
+    {
+      "id": "file:src/log_mcp/tools/docker_logs.py",
+      "type": "file",
+      "name": "docker_logs.py",
+      "filePath": "src/log_mcp/tools/docker_logs.py",
+      "layer": "service",
+      "summary": "Log analysis functions for Docker containers using the docker-py SDK. Mirrors the file_logs API with docker_tail, docker_search, and docker_summarize_errors, normalizing timestamps and hex IDs to group error patterns.",
+      "language": "python"
+    },
+    {
+      "id": "file:src/log_mcp/tools/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "src/log_mcp/tools/__init__.py",
+      "layer": "utility",
+      "summary": "Package initializer for log_mcp.tools subpackage.",
+      "language": "python"
+    },
+    {
+      "id": "file:src/log_mcp/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "src/log_mcp/__init__.py",
+      "layer": "utility",
+      "summary": "Package initializer for log_mcp module.",
+      "language": "python"
+    },
+    {
+      "id": "file:tests/test_docker_logs.py",
+      "type": "file",
+      "name": "test_docker_logs.py",
+      "filePath": "tests/test_docker_logs.py",
+      "layer": "utility",
+      "summary": "Pytest tests for docker_logs tools using mocked docker-py client.",
+      "language": "python"
+    },
+    {
+      "id": "file:tests/test_file_logs.py",
+      "type": "file",
+      "name": "test_file_logs.py",
+      "filePath": "tests/test_file_logs.py",
+      "layer": "utility",
+      "summary": "Pytest tests for file_logs tools using temporary log files.",
+      "language": "python"
+    },
+    {
+      "id": "file:pyproject.toml",
+      "type": "file",
+      "name": "pyproject.toml",
+      "filePath": "pyproject.toml",
+      "layer": "utility",
+      "summary": "Project configuration declaring dependencies (fastmcp, docker) and the console entry point for log-mcp-server.",
+      "language": "toml"
+    },
+    {
+      "id": "function:tail_logs",
+      "type": "function",
+      "name": "tail_logs",
+      "filePath": "src/log_mcp/tools/file_logs.py",
+      "layer": "service",
+      "summary": "Returns the last N lines from a log file on disk.",
+      "language": "python"
+    },
+    {
+      "id": "function:search_logs",
+      "type": "function",
+      "name": "search_logs",
+      "filePath": "src/log_mcp/tools/file_logs.py",
+      "layer": "service",
+      "summary": "Searches a log file with a case-insensitive regex and returns matching lines up to max_results.",
+      "language": "python",
+      "concepts": ["pattern-matching"]
+    },
+    {
+      "id": "function:filter_by_level",
+      "type": "function",
+      "name": "filter_by_level",
+      "filePath": "src/log_mcp/tools/file_logs.py",
+      "layer": "service",
+      "summary": "Filters log lines by severity level, detecting both JSON-structured logs (level/severity/lvl keys) and plain text log lines.",
+      "language": "python"
+    },
+    {
+      "id": "function:summarize_errors",
+      "type": "function",
+      "name": "summarize_errors",
+      "filePath": "src/log_mcp/tools/file_logs.py",
+      "layer": "service",
+      "summary": "Groups and counts error lines by normalized pattern (strips timestamps and hex IDs) and returns the top N error patterns.",
+      "language": "python"
+    },
+    {
+      "id": "function:docker_tail",
+      "type": "function",
+      "name": "docker_tail",
+      "filePath": "src/log_mcp/tools/docker_logs.py",
+      "layer": "service",
+      "summary": "Fetches the last N log lines from a Docker container via the docker-py SDK.",
+      "language": "python"
+    },
+    {
+      "id": "function:docker_search",
+      "type": "function",
+      "name": "docker_search",
+      "filePath": "src/log_mcp/tools/docker_logs.py",
+      "layer": "service",
+      "summary": "Searches Docker container logs using a regex pattern, returning matching lines.",
+      "language": "python",
+      "concepts": ["pattern-matching"]
+    },
+    {
+      "id": "function:docker_summarize_errors",
+      "type": "function",
+      "name": "docker_summarize_errors",
+      "filePath": "src/log_mcp/tools/docker_logs.py",
+      "layer": "service",
+      "summary": "Fetches and groups error/exception/fatal lines from a Docker container's logs into a ranked pattern summary.",
+      "language": "python"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:server-imports-file_logs",
+      "source": "file:src/log_mcp/server.py",
+      "target": "file:src/log_mcp/tools/file_logs.py",
+      "type": "imports"
+    },
+    {
+      "id": "edge:server-imports-docker_logs",
+      "source": "file:src/log_mcp/server.py",
+      "target": "file:src/log_mcp/tools/docker_logs.py",
+      "type": "imports"
+    },
+    {
+      "id": "edge:server-calls-tail_logs",
+      "source": "file:src/log_mcp/server.py",
+      "target": "function:tail_logs",
+      "type": "calls"
+    },
+    {
+      "id": "edge:server-calls-search_logs",
+      "source": "file:src/log_mcp/server.py",
+      "target": "function:search_logs",
+      "type": "calls"
+    },
+    {
+      "id": "edge:server-calls-filter_by_level",
+      "source": "file:src/log_mcp/server.py",
+      "target": "function:filter_by_level",
+      "type": "calls"
+    },
+    {
+      "id": "edge:server-calls-summarize_errors",
+      "source": "file:src/log_mcp/server.py",
+      "target": "function:summarize_errors",
+      "type": "calls"
+    },
+    {
+      "id": "edge:server-calls-docker_tail",
+      "source": "file:src/log_mcp/server.py",
+      "target": "function:docker_tail",
+      "type": "calls"
+    },
+    {
+      "id": "edge:server-calls-docker_search",
+      "source": "file:src/log_mcp/server.py",
+      "target": "function:docker_search",
+      "type": "calls"
+    },
+    {
+      "id": "edge:server-calls-docker_summarize_errors",
+      "source": "file:src/log_mcp/server.py",
+      "target": "function:docker_summarize_errors",
+      "type": "calls"
+    },
+    {
+      "id": "edge:tests-docker-uses-docker_logs",
+      "source": "file:tests/test_docker_logs.py",
+      "target": "file:src/log_mcp/tools/docker_logs.py",
+      "type": "uses"
+    },
+    {
+      "id": "edge:tests-file-uses-file_logs",
+      "source": "file:tests/test_file_logs.py",
+      "target": "file:src/log_mcp/tools/file_logs.py",
+      "type": "uses"
+    }
+  ],
+  "tours": [
+    {
+      "id": "tour:file-log-analysis",
+      "title": "Analyzing a Local Log File",
+      "steps": [
+        { "nodeId": "file:src/log_mcp/server.py", "reason": "Start here to see the four MCP tools registered for local file log analysis." },
+        { "nodeId": "function:filter_by_level", "reason": "The most interesting tool — handles both JSON-structured and plain-text logs with a single function." },
+        { "nodeId": "function:summarize_errors", "reason": "See how error patterns are normalized and deduplicated to surface the most frequent issues." }
+      ]
+    },
+    {
+      "id": "tour:docker-log-analysis",
+      "title": "Analyzing Docker Container Logs",
+      "steps": [
+        { "nodeId": "file:src/log_mcp/tools/docker_logs.py", "reason": "All Docker log analysis lives here — uses docker-py SDK to fetch logs from running containers." },
+        { "nodeId": "function:docker_summarize_errors", "reason": "See the error normalization pattern: strips timestamps and hex IDs before counting." },
+        { "nodeId": "file:tests/test_docker_logs.py", "reason": "Tests demonstrate how the docker client is mocked for unit testing." }
+      ]
+    }
+  ]
+}
